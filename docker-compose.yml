@@ -1,32 +1,45 @@
-version: '3.4'
+version: "3.8"
 
 services:
-  cosmosdb:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
-    ports:  
-      - '8081:8081' # Data Explorer
-      - '10250:10250'
-      - '10251:10251'
-      - '10252:10252'
-      - '10253:10253'
-      - '10254:10254'
-      - '10255:10255'
-    restart: unless-stopped
-    volumes:
-     - vol_cosmos:/tmp/cosmos/appdata
-    environment:
-      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
-      # - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
-  azurite:
-    image: mcr.microsoft.com/azure-storage/azurite:latest
-    ports: 
-      - 10000:10000
-    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
-  freightmatic.functions:
+  nestjs:
     build:
-      context: ./Freightmatic.Functions
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 30039:30039
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./uploads:/usr/src/app/uploads
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_PORT: ${APP_PORT}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET}
+    depends_on:
+      - mysql
+    networks:
+      - freightmatic-network
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - freightmatic-network
+
+networks:
+  freightmatic-network:
+    driver: bridge
 
 volumes:
-  vol_cosmos:
+  mysql_data:
