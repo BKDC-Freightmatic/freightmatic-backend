@@ -1,0 +1,6 @@
+version: '3.4'
+
+services:
+  freightmatic.functions:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

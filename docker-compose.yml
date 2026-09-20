@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    ports:  
+      - '8081:8081' # Data Explorer
+      - '10250:10250'
+      - '10251:10251'
+      - '10252:10252'
+      - '10253:10253'
+      - '10254:10254'
+      - '10255:10255'
+    restart: unless-stopped
+    volumes:
+     - vol_cosmos:/tmp/cosmos/appdata
+    environment:
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      # - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    ports: 
+      - 10000:10000
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+  freightmatic.functions:
+    build:
+      context: ./Freightmatic.Functions
+    ports:
+      - 30039:30039
+
+volumes:
+  vol_cosmos:
