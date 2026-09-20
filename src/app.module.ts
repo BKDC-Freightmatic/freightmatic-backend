@@ -8,6 +8,7 @@ import { join } from 'path';
 import { UserEntity } from './v1/users/entities/user.entity';
 import { DeliveryEntity } from './v1/deliveries/entities/delivery.entity';
 import { ScheduleEntity } from './v1/schedules/entities/schedule.entity';
+import { FileEntity } from './v1/files/entities/file.entity';
 
 import { AuthModule } from './v1/auth/auth.module';
 import { UsersModule } from './v1/users/users.module';
@@ -31,7 +32,7 @@ import { JwtAuthGuard } from './v1/auth/jwt-auth.guard';
         username: configService.get<string>('DB_USERNAME', 'root'),
         password: configService.get<string>('DB_PASSWORD', 'Pippo321!@'),
         database: configService.get<string>('DB_DATABASE', 'freightmatic'),
-        entities: [UserEntity, DeliveryEntity, ScheduleEntity],
+        entities: [UserEntity, DeliveryEntity, ScheduleEntity, FileEntity],
         synchronize: configService.get<string>('NODE_ENV') === 'Development',
         logging: configService.get<string>('DB_LOGGING') === 'true',
       }),

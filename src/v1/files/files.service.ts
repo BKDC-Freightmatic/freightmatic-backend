@@ -1,36 +1,60 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { existsSync, mkdirSync, createWriteStream } from 'fs';
+import { join } from 'path';
+import { pipeline } from 'stream/promises';
+import { FileEntity } from './entities/file.entity';
 
 @Injectable()
 export class FilesService {
-  private readonly uploadDir = path.join(process.cwd(), 'uploads');
+  private readonly uploadDir = join(process.cwd(), 'uploads');
 
-  constructor() {
-    if (!fs.existsSync(this.uploadDir)) {
-      fs.mkdirSync(this.uploadDir, { recursive: true });
+  constructor(
+    @InjectRepository(FileEntity)
+    private readonly fileRepository: Repository<FileEntity>,
+  ) {
+    if (!existsSync(this.uploadDir)) {
+      mkdirSync(this.uploadDir, { recursive: true });
     }
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<{ title: string; url: string }> {
-    const ext = path.extname(file.originalname);
-    const fileName = `${uuidv4()}${ext}`;
-    const filePath = path.join(this.uploadDir, fileName);
+  async saveFile(
+    fileBuffer: Buffer,
+    originalName: string,
+    hostUrl: string,
+  ): Promise<{ title: string; url: string }> {
+    const uniqueFilename = `${Date.now()}-${originalName}`;
+    const filePath = join(this.uploadDir, uniqueFilename);
 
-    await fs.promises.writeFile(filePath, file.buffer);
+    // Save to disk
+    await require('fs').promises.writeFile(filePath, fileBuffer);
 
-    const baseUrl = process.env.BASE_URL || 'http://localhost:4000';
+    // Construct URL dynamically matching menosync pattern
+    const fileUrl = `${hostUrl}/uploads/${uniqueFilename}`;
+
+    // Create DB entry
+    const fileEntity = this.fileRepository.create({
+      filename: uniqueFilename,
+      originalName: originalName,
+      path: filePath,
+      url: fileUrl,
+    });
+    await this.fileRepository.save(fileEntity);
+
     return {
-      title: file.originalname,
-      url: `${baseUrl}/uploads/${fileName}`,
+      title: originalName,
+      url: fileUrl,
     };
   }
 
-  async uploadFiles(files: Express.Multer.File[]): Promise<{ title: string; url: string }[]> {
+  async uploadFiles(
+    files: Express.Multer.File[],
+    hostUrl: string,
+  ): Promise<{ title: string; url: string }[]> {
     const results = [];
     for (const file of files) {
-      const res = await this.uploadFile(file);
+      const res = await this.saveFile(file.buffer, file.originalname, hostUrl);
       results.push(res);
     }
     return results;
