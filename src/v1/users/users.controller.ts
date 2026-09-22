@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Body, Put, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 
@@ -12,6 +12,30 @@ export class UsersController {
   @ApiOperation({ summary: 'Get current logged in user profile' })
   async getMe(@Request() req) {
     return this.usersService.findOne(req.user.userId);
+  }
+
+  @Get('partial-trucks')
+  @ApiOperation({ summary: 'Get partial truck users' })
+  async getPartialTrucks() {
+    return this.usersService.getPartialTrucks();
+  }
+
+  @Get('full-trucks')
+  @ApiOperation({ summary: 'Get full truck users' })
+  async getFullTrucks() {
+    return this.usersService.getFullTrucks();
+  }
+
+  @Get('top-truckers')
+  @ApiOperation({ summary: 'Get top rated truckers' })
+  async getTopTruckers() {
+    return this.usersService.getTopTruckers();
+  }
+
+  @Post('suitable-truckers')
+  @ApiOperation({ summary: 'Get AI suitable truckers for route' })
+  async getSuitableTruckersAI(@Body() dto: any) {
+    return this.usersService.getSuitableTruckersAI(dto);
   }
 
   @Get(':id')

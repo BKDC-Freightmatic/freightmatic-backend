@@ -3,21 +3,25 @@ import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { DeliveryStatusEnum, PickupCategoryEnum } from '../../../common/enums';
 
 export class CreateDeliveryDto {
-  @ApiProperty({ example: 10.5 })
+  @ApiProperty({ example: 10.5, required: false })
+  @IsOptional()
   @IsNumber()
-  weight: number;
+  weight?: number;
 
-  @ApiProperty({ example: 50.0 })
+  @ApiProperty({ example: 50.0, required: false })
+  @IsOptional()
   @IsNumber()
-  width: number;
+  width?: number;
 
-  @ApiProperty({ example: 80.0 })
+  @ApiProperty({ example: 80.0, required: false })
+  @IsOptional()
   @IsNumber()
-  length: number;
+  length?: number;
 
-  @ApiProperty({ example: 40.0 })
+  @ApiProperty({ example: 40.0, required: false })
+  @IsOptional()
   @IsNumber()
-  height: number;
+  height?: number;
 
   @ApiProperty({ example: 'cat_electronics', required: false })
   @IsOptional()
@@ -29,14 +33,25 @@ export class CreateDeliveryDto {
   @IsString()
   deliveryInsuranceId?: string;
 
+  @ApiProperty({ example: 'trucker_123', required: false })
+  @IsOptional()
+  @IsString()
+  truckerId?: string;
+
+  @ApiProperty({ example: 'schedule_123', required: false })
+  @IsOptional()
+  @IsString()
+  scheduleId?: string;
+
   @ApiProperty({ example: 'SHP-99281', required: false })
   @IsOptional()
   @IsString()
   shippingCode?: string;
 
-  @ApiProperty({ example: 150000 })
+  @ApiProperty({ example: 150000, required: false })
+  @IsOptional()
   @IsNumber()
-  price: number;
+  price?: number;
 
   @ApiProperty({ example: 'Handle with care', required: false })
   @IsOptional()
@@ -48,13 +63,19 @@ export class CreateDeliveryDto {
   @IsString()
   packageDescription?: string;
 
-  @ApiProperty({ example: 15.5 })
+  @ApiProperty({ example: 15.5, required: false })
+  @IsOptional()
   @IsNumber()
-  distance: number;
+  distance?: number;
 
-  @ApiProperty({ example: 165000 })
+  @ApiProperty({ example: 165000, required: false })
+  @IsOptional()
   @IsNumber()
-  totalPrice: number;
+  totalPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  pickupTime?: any;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -64,9 +85,10 @@ export class CreateDeliveryDto {
   @IsOptional()
   endLocation?: any;
 
-  @ApiProperty({ enum: PickupCategoryEnum, default: PickupCategoryEnum.NOW })
+  @ApiProperty({ enum: PickupCategoryEnum, default: PickupCategoryEnum.NOW, required: false })
+  @IsOptional()
   @IsEnum(PickupCategoryEnum)
-  pickupCategory: PickupCategoryEnum;
+  pickupCategory?: PickupCategoryEnum;
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()

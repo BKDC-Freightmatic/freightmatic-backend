@@ -68,9 +68,9 @@ export class DeliveryEntity extends BaseGeneralEntity {
 
   @Column({
     name: 'status',
-    type: 'enum',
-    enum: DeliveryStatusEnum,
-    default: DeliveryStatusEnum.PENDING,
+    type: 'varchar',
+    length: 50,
+    default: DeliveryStatusEnum.NA,
   })
   public status: DeliveryStatusEnum;
 

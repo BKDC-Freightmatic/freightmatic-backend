@@ -39,8 +39,11 @@ import { JwtAuthGuard } from './v1/auth/jwt-auth.guard';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
+      serveStaticOptions: {
+        fallthrough: false,
+      },
     }),
     AuthModule,
     UsersModule,

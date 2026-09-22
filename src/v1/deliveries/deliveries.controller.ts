@@ -5,6 +5,7 @@ import {
   Put,
   Body,
   Param,
+  Query,
   Request,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -32,8 +33,11 @@ export class DeliveriesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all deliveries' })
-  async findAll() {
-    return this.deliveriesService.findAll();
+  async findAll(
+    @Query('searchFieldName') searchFieldName?: string,
+    @Query('searchFieldValue') searchFieldValue?: string,
+  ) {
+    return this.deliveriesService.findAll(searchFieldName, searchFieldValue);
   }
 
   @Put(':id/status')

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { TruckCategoryEnum } from '../../../common/enums';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
   @ApiProperty({ example: 50 })
@@ -44,7 +43,8 @@ export class CreateScheduleDto {
   @IsString()
   postalCode?: string;
 
-  @ApiProperty({ enum: TruckCategoryEnum, default: TruckCategoryEnum.BOX_TRUCK })
-  @IsEnum(TruckCategoryEnum)
-  truckCategory: TruckCategoryEnum;
+  @ApiProperty({ example: 'Partial', required: false })
+  @IsOptional()
+  @IsString()
+  truckCategory?: string;
 }

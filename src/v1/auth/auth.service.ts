@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { UserTypeEnum } from '../../common/enums';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
       name: dto.name,
       phoneNumber: dto.phoneNumber,
       password: hashedPassword,
+      userType: (dto.userType as any) || UserTypeEnum.TRUCKER,
     });
 
     await this.userRepository.save(user);
@@ -48,8 +50,10 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return {
-      accessToken,
-      refreshToken,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
       user: {
         id: user.id,
         username: user.userName,
@@ -80,8 +84,10 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return {
-      accessToken,
-      refreshToken,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
       user: {
         id: user.id,
         username: user.userName,

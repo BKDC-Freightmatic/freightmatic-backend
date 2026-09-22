@@ -16,9 +16,9 @@ export class SchedulesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get schedule by ID' })
+  @ApiOperation({ summary: 'Get schedules by trucker ID or schedule ID' })
   async findOne(@Param('id') id: string) {
-    return this.schedulesService.findOne(id);
+    return this.schedulesService.findByTruckerOrId(id);
   }
 
   @Get()

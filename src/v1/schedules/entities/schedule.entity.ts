@@ -1,6 +1,5 @@
 import { BaseGeneralEntity } from '../../../base/base.entity';
 import { Column, Entity } from 'typeorm';
-import { TruckCategoryEnum } from '../../../common/enums';
 
 @Entity({ name: 'schedules' })
 export class ScheduleEntity extends BaseGeneralEntity {
@@ -27,11 +26,11 @@ export class ScheduleEntity extends BaseGeneralEntity {
 
   @Column({
     name: 'truck_category',
-    type: 'enum',
-    enum: TruckCategoryEnum,
-    default: TruckCategoryEnum.BOX_TRUCK,
+    type: 'varchar',
+    length: 100,
+    default: 'Partial',
   })
-  public truckCategory: TruckCategoryEnum;
+  public truckCategory: string;
 
   @Column({ name: 'width', type: 'int', default: 0 })
   public width: number;

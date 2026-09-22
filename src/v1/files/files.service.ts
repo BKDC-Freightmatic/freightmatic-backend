@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { existsSync, mkdirSync, createWriteStream } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { pipeline } from 'stream/promises';
 import { FileEntity } from './entities/file.entity';
 
 @Injectable()
@@ -24,14 +23,16 @@ export class FilesService {
     originalName: string,
     hostUrl: string,
   ): Promise<{ title: string; url: string }> {
-    const uniqueFilename = `${Date.now()}-${originalName}`;
+    // Sanitize file name to remove spaces and special characters for clean URLs
+    const sanitizedName = originalName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9._-]/g, '');
+    const uniqueFilename = `${Date.now()}-${sanitizedName}`;
     const filePath = join(this.uploadDir, uniqueFilename);
 
     // Save to disk
     await require('fs').promises.writeFile(filePath, fileBuffer);
 
-    // Construct URL dynamically matching menosync pattern
-    const fileUrl = `${hostUrl}/uploads/${uniqueFilename}`;
+    // Construct URL dynamically
+    const fileUrl = `${hostUrl}/uploads/${encodeURIComponent(uniqueFilename)}`;
 
     // Create DB entry
     const fileEntity = this.fileRepository.create({

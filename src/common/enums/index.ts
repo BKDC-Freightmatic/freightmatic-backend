@@ -10,6 +10,12 @@ export enum PickupCategoryEnum {
 }
 
 export enum DeliveryStatusEnum {
+  NA = 'NA',
+  PROCESSING = 'Processing',
+  PAYMENT_DONE = 'PaymentDone',
+  DONE = 'Done',
+  FAILED = 'Failed',
+  ALL = 'ALL',
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   DELIVERING = 'DELIVERING',
@@ -23,4 +29,6 @@ export enum TruckCategoryEnum {
   FLATBED = 'FLATBED',
   VAN = 'VAN',
   REFRIGERATED = 'REFRIGERATED',
+  PARTIAL = 'Partial',
+  FULL = 'Full',
 }

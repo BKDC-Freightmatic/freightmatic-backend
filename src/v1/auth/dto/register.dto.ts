@@ -26,4 +26,9 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   phoneNumber?: string;
+
+  @ApiProperty({ example: 'Trucker', required: false })
+  @IsOptional()
+  @IsString()
+  userType?: string;
 }
