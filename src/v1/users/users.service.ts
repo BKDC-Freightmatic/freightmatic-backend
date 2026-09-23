@@ -1,18 +1,49 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 import { UserEntity } from './entities/user.entity';
 import { ScheduleEntity } from '../schedules/entities/schedule.entity';
 import { UserTypeEnum } from '../../common/enums';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(ScheduleEntity)
     private readonly scheduleRepository: Repository<ScheduleEntity>,
   ) {}
+
+  async onModuleInit() {
+    const count = await this.userRepository.count();
+    if (count === 0) {
+      const defaultPassword = await bcrypt.hash('password123', 10);
+      await this.userRepository.save([
+        {
+          id: '80b66ac1-65a4-476d-91a4-41eb6ed01fb7',
+          userName: 'mvfurniture',
+          email: 'mvfurniture.official@gmail.com',
+          name: 'Mv Furniture',
+          phoneNumber: '04385557989',
+          password: defaultPassword,
+          userType: UserTypeEnum.SHIPPER,
+          rating: 5,
+        },
+        {
+          id: 'abe1a58d-7273-46bd-ae88-d54288f620fc',
+          userName: 'Chris.lee',
+          email: 'chris.lee@gmail.com',
+          name: 'Chris Lee',
+          phoneNumber: '04385557123',
+          password: defaultPassword,
+          userType: UserTypeEnum.TRUCKER,
+          rating: 5,
+          truck: { maximumWeight: 5000, category: 'BOX_TRUCK' },
+        },
+      ]);
+    }
+  }
 
   async findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
