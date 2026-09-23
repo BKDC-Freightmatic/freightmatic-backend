@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -22,6 +22,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign in user' })
   async signIn(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Public()
+  @Get('access-token')
+  @ApiOperation({ summary: 'Refresh access token' })
+  async getAccessToken(@Request() req) {
+    return this.authService.refreshAccessToken(req.user?.userId);
   }
 
   @ApiBearerAuth()

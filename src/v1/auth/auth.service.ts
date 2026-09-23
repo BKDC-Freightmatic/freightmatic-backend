@@ -64,8 +64,9 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const term = (dto.username || '').trim();
     const user = await this.userRepository.findOne({
-      where: [{ userName: dto.username }, { email: dto.username }],
+      where: [{ userName: term }, { email: term }],
     });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -93,6 +94,25 @@ export class AuthService {
         username: user.userName,
         email: user.email,
         name: user.name,
+      },
+    };
+  }
+
+  async refreshAccessToken(userId?: string) {
+    let user: UserEntity | null = null;
+    if (userId) {
+      user = await this.userRepository.findOne({ where: { id: userId } });
+    }
+    const payload = user
+      ? { sub: user.id, username: user.userName }
+      : { sub: 'guest', username: 'guest' };
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      statusCode: 200,
+      status: true,
+      data: {
+        accessToken,
       },
     };
   }
