@@ -33,7 +33,7 @@ import { JwtAuthGuard } from './v1/auth/jwt-auth.guard';
         password: configService.get<string>('DB_PASSWORD', 'Pippo321!@'),
         database: configService.get<string>('DB_DATABASE', 'freightmatic'),
         entities: [UserEntity, DeliveryEntity, ScheduleEntity, FileEntity],
-        synchronize: configService.get<string>('NODE_ENV') === 'Development',
+        synchronize: true,
         logging: configService.get<string>('DB_LOGGING') === 'true',
       }),
       inject: [ConfigService],
