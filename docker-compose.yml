@@ -7,12 +7,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
       - ./uploads:/usr/src/app/uploads
-    environment:
-      NODE_ENV: ${NODE_ENV}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - freightmatic-network
 
