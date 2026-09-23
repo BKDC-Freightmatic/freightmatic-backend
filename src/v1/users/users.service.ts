@@ -19,6 +19,7 @@ export class UsersService implements OnModuleInit {
     const count = await this.userRepository.count();
     if (count === 0) {
       const defaultPassword = await bcrypt.hash('password123', 10);
+      const truckerPassword = await bcrypt.hash('Aa123456', 10);
       await this.userRepository.save([
         {
           id: '80b66ac1-65a4-476d-91a4-41eb6ed01fb7',
@@ -33,10 +34,10 @@ export class UsersService implements OnModuleInit {
         {
           id: 'abe1a58d-7273-46bd-ae88-d54288f620fc',
           userName: 'Chris.lee',
-          email: 'chris.lee@gmail.com',
+          email: 'chrislee.offical@gmail.com',
           name: 'Chris Lee',
           phoneNumber: '04385557123',
-          password: defaultPassword,
+          password: truckerPassword,
           userType: UserTypeEnum.TRUCKER,
           rating: 5,
           truck: { maximumWeight: 5000, category: 'BOX_TRUCK' },
